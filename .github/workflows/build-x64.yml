@@ -47,23 +47,12 @@ jobs:
         shell: cmd
         run: build_ci.cmd
 
-      - name: Install Inno Setup
+      - name: Verify Inno Setup
         shell: pwsh
         run: |
           $iscc = "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
-          if (Test-Path $iscc) { Write-Host "Inno Setup already installed"; exit 0 }
-          try {
-            choco install innosetup -y --no-progress
-          } catch {
-            Write-Host "choco install failed; falling back to direct download"
-          }
-          if (-not (Test-Path $iscc)) {
-            $url = "https://files.jrsoftware.org/is/6/innosetup-6.2.2.exe"
-            $tmp = Join-Path $env:RUNNER_TEMP "innosetup.exe"
-            Invoke-WebRequest -Uri $url -OutFile $tmp -UseBasicParsing
-            Start-Process -FilePath $tmp -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART','/SP-' -Wait
-          }
-          if (-not (Test-Path $iscc)) { throw "ISCC.exe not found after install attempts" }
+          if (-not (Test-Path $iscc)) { choco install innosetup -y --no-progress }
+          if (-not (Test-Path $iscc)) { throw "ISCC.exe not found at $iscc" }
 
       - name: Build installer (x64)
         shell: cmd

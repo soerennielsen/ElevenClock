@@ -45,18 +45,14 @@ UsePreviousTasks=no
 
 [Languages] 
 Name: "English"; MessagesFile: "compiler:Default.isl"    
-Name: "Armenian"; MessagesFile: "compiler:Languages\Armenian.isl"
 Name: "BrazilianPortuguese"; MessagesFile: "compiler:Languages\BrazilianPortuguese.isl"
 Name: "Catalan"; MessagesFile: "compiler:Languages\Catalan.isl"
-Name: "Corsican"; MessagesFile: "compiler:Languages\Corsican.isl"
 Name: "Czech"; MessagesFile: "compiler:Languages\Czech.isl"
 Name: "Danish"; MessagesFile: "compiler:Languages\Danish.isl"
 Name: "Dutch"; MessagesFile: "compiler:Languages\Dutch.isl"
 Name: "Finnish"; MessagesFile: "compiler:Languages\Finnish.isl"
 Name: "French"; MessagesFile: "compiler:Languages\French.isl"
 Name: "German"; MessagesFile: "compiler:Languages\German.isl"
-Name: "Hebrew"; MessagesFile: "compiler:Languages\Hebrew.isl"
-Name: "Icelandic"; MessagesFile: "compiler:Languages\Icelandic.isl"
 Name: "Italian"; MessagesFile: "compiler:Languages\Italian.isl"
 Name: "Japanese"; MessagesFile: "compiler:Languages\Japanese.isl"
 Name: "Norwegian"; MessagesFile: "compiler:Languages\Norwegian.isl"
@@ -67,7 +63,6 @@ Name: "Slovenian"; MessagesFile: "compiler:Languages\Slovenian.isl"
 Name: "Spanish"; MessagesFile: "compiler:Languages\Spanish.isl"
 Name: "Turkish"; MessagesFile: "compiler:Languages\Turkish.isl" 
 Name: "Ukrainian"; MessagesFile: "compiler:Languages\Ukrainian.isl"
-Name: "Korean"; MessagesFile: "compiler:Languages\Korean.isl"
 
 [UninstallRun]
 Filename: "{cmd}"; Parameters: "/C ""taskkill /im ElevenClock.exe /f /t"
