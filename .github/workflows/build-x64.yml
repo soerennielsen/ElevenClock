@@ -1,0 +1,90 @@
+name: Build x64
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - '**.py'
+      - 'requirements.txt'
+      - 'build_ci.cmd'
+      - 'elevenclock/elevenclock.spec'
+      - 'ElevenClock.iss'
+      - '.github/workflows/build-x64.yml'
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - '**.py'
+      - 'requirements.txt'
+      - 'build_ci.cmd'
+      - 'elevenclock/elevenclock.spec'
+      - 'ElevenClock.iss'
+      - '.github/workflows/build-x64.yml'
+  workflow_dispatch:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up Python 3.11 (x64)
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+          architecture: 'x64'
+
+      - name: Show Python / arch
+        shell: pwsh
+        run: |
+          python -c "import platform, sys; print('python', sys.version); print('machine', platform.machine())"
+
+      - name: Build x64 binaries
+        shell: cmd
+        run: build_ci.cmd
+
+      - name: Install Inno Setup
+        shell: pwsh
+        run: |
+          $iscc = "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
+          if (Test-Path $iscc) { Write-Host "Inno Setup already installed"; exit 0 }
+          try {
+            choco install innosetup -y --no-progress
+          } catch {
+            Write-Host "choco install failed; falling back to direct download"
+          }
+          if (-not (Test-Path $iscc)) {
+            $url = "https://files.jrsoftware.org/is/6/innosetup-6.2.2.exe"
+            $tmp = Join-Path $env:RUNNER_TEMP "innosetup.exe"
+            Invoke-WebRequest -Uri $url -OutFile $tmp -UseBasicParsing
+            Start-Process -FilePath $tmp -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART','/SP-' -Wait
+          }
+          if (-not (Test-Path $iscc)) { throw "ISCC.exe not found after install attempts" }
+
+      - name: Build installer (x64)
+        shell: cmd
+        run: '"C:\Program Files (x86)\Inno Setup 6\ISCC.exe" /FElevenClock.Installer.x64 ElevenClock.iss'
+
+      - name: Upload ElevenClock x64 binaries
+        uses: actions/upload-artifact@v4
+        with:
+          name: ElevenClock-x64
+          path: ElevenClockBin/
+          if-no-files-found: error
+
+      - name: Upload x64 installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: ElevenClock.Installer.x64
+          path: ElevenClock.Installer.x64.exe
+          if-no-files-found: error
+
+      - name: Attach x64 installer to GitHub Release
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ElevenClock.Installer.x64.exe

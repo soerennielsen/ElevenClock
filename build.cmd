@@ -106,8 +106,8 @@ pause
 
 set INSTALLATOR="%SYSTEMDRIVE%\Program Files (x86)\Inno Setup 6\ISCC.exe"
 if exist %INSTALLATOR% (
-    %INSTALLATOR% "ElevenClock.iss"
-    ElevenClock.Installer.exe
+    %INSTALLATOR% /FElevenClock.Installer.x64 "ElevenClock.iss"
+    ElevenClock.Installer.x64.exe
 ) else (
     echo Make installer is skipped, because installator missing.
     echo Running app...

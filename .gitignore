@@ -32,3 +32,4 @@ ElevenClock.Installer.exe.zip
 .vs/
 scripts/APIKEY.txt
 sign.cmd.lnk
+.claude/

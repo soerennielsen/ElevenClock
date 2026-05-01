@@ -1,7 +1,5 @@
 # -*- mode: python ; coding: utf-8 -*-
 
-block_cipher = None
-
 import importlib, os
 
 #package_imports = [['qtmodern', ['resources/frameless.qss', 'resources/style.qss']]]
@@ -16,14 +14,10 @@ a = Analysis(['__init__.py'],
              hookspath=[],
              runtime_hooks=[],
              excludes=['eel', 'tkinter', "PyQt5", "PySide2", "pygame", "numpy", "matplotlib", "elevenclock", "zroya"],
-             win_no_prefer_redirects=False,
-             win_private_assemblies=False,
-             cipher=block_cipher,
              noarchive=False)
 
 
-pyz = PYZ(a.pure, a.zipped_data,
-             cipher=block_cipher)
+pyz = PYZ(a.pure, a.zipped_data)
 exe = EXE(
     pyz,
     a.scripts,
