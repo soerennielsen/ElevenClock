@@ -45,6 +45,8 @@ if platform.system() == 'Windows':
 
 
     SetWindowCompositionAttribute = user32.SetWindowCompositionAttribute
+    SetWindowCompositionAttribute.argtypes = [HWND, ctypes.POINTER(WINDOWCOMPOSITIONATTRIBDATA)]
+    SetWindowCompositionAttribute.restype = BOOL
 
 def ExtendFrameIntoClientArea(hwnd):
 
@@ -56,12 +58,14 @@ def ExtendFrameIntoClientArea(hwnd):
                     ]
 
     DwmExtendFrameIntoClientArea = dwm.DwmExtendFrameIntoClientArea
+    DwmExtendFrameIntoClientArea.argtypes = [HWND, ctypes.POINTER(_MARGINS)]
+    DwmExtendFrameIntoClientArea.restype = ctypes.c_long
     m = _MARGINS()
     m.cxLeftWidth = -1
     m.cxRightWidth = -1
     m.cyTopHeight = -1
     m.cyBottomHeight = -1
-    return DwmExtendFrameIntoClientArea(hwnd, m)
+    return DwmExtendFrameIntoClientArea(hwnd, ctypes.byref(m))
 
 def HEXtoRGBAint(HEX:str):
     alpha = HEX[7:]
@@ -96,15 +100,17 @@ def ApplyBlur(hwnd, hexColor=False, Acrylic=False, Dark=False, smallCorners=Fals
     data.SizeOfData = ctypes.sizeof(accent)
     data.Data = ctypes.cast(ctypes.pointer(accent), ctypes.POINTER(ctypes.c_int))
 
-    SetWindowCompositionAttribute(int(hwnd), data)
+    SetWindowCompositionAttribute(int(hwnd), ctypes.byref(data))
 
     if Dark:
         data.Attribute = 26 #WCA_USEDARKMODECOLORS
 
-        SetWindowCompositionAttribute(int(hwnd), data)
+        SetWindowCompositionAttribute(int(hwnd), ctypes.byref(data))
 
 
     DwmSetWindowAttribute = dwm.DwmSetWindowAttribute #  Add rounded borders (My addition)
+    DwmSetWindowAttribute.argtypes = [HWND, DWORD, ctypes.c_void_p, DWORD]
+    DwmSetWindowAttribute.restype = ctypes.c_long
     DwmSetWindowAttribute(int(hwnd), 33, ctypes.byref(ctypes.c_int(3 if smallCorners else 2)), ctypes.sizeof(ctypes.c_int)) # Add rounded borders (My addition)
 
 
