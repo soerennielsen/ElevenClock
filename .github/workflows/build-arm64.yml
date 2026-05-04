@@ -3,6 +3,7 @@ name: Build ARM64
 on:
   push:
     branches: [ "main" ]
+    tags: [ '[0-9]*' ]
     paths:
       - '**.py'
       - 'requirements.txt'
@@ -20,11 +21,6 @@ on:
       - 'ElevenClock.iss'
       - '.github/workflows/build-arm64.yml'
   workflow_dispatch:
-  release:
-    types: [published]
-
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
 
 jobs:
   build:
@@ -62,21 +58,24 @@ jobs:
         run: '"C:\Program Files (x86)\Inno Setup 6\ISCC.exe" /FElevenClock.Installer.arm64 ElevenClock.iss'
 
       - name: Upload ElevenClock ARM64 binaries
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ElevenClock-arm64
           path: ElevenClockBin/
           if-no-files-found: error
 
       - name: Upload ARM64 installer
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ElevenClock.Installer.arm64
           path: ElevenClock.Installer.arm64.exe
           if-no-files-found: error
 
-      - name: Attach ARM64 installer to GitHub Release
-        if: github.event_name == 'release'
-        uses: softprops/action-gh-release@v2
+      - name: Create or update GitHub Release with ARM64 installer
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v3
         with:
+          tag_name: ${{ github.ref_name }}
+          name: ElevenClock ${{ github.ref_name }}
+          generate_release_notes: true
           files: ElevenClock.Installer.arm64.exe

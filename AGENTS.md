@@ -100,6 +100,8 @@ Workflows live in `.github/workflows/`:
 - **build-x64** — runs on `windows-latest`. Executes `build_ci.cmd`, installs Inno Setup, runs `ISCC /FElevenClock.Installer.x64 ElevenClock.iss`. Uploads `ElevenClockBin/` and `ElevenClock.Installer.x64.exe` as artifacts; on `release: published` attaches the installer to the GitHub Release.
 - **build-arm64** — runs on `windows-11-arm`. Same flow as build-x64 but native ARM64; produces `ElevenClock.Installer.arm64.exe`.
 
+Both build workflows are tag-driven for releases: pushing a tag matching `[0-9]*` (e.g. `4.4.1.2`) builds and attaches both installers to a freshly-created GitHub Release. See [RELEASING.md](./RELEASING.md) for the end-to-end release process.
+
 Dependabot config: `.github/dependabot.yml` (cron is every 7 days — see commit `f967218`).
 
 ## Conventions for agents
